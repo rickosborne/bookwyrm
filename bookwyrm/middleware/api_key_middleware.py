@@ -1,7 +1,9 @@
 import logging
 import re
 
+from django.conf import settings
 from django.contrib.auth.hashers import PBKDF2PasswordHasher
+from django.middleware.csrf import get_token, CSRF_SESSION_KEY
 
 from bookwyrm.models import User
 
@@ -38,6 +40,7 @@ class ApiKeyMiddleware:
                                 if self.hasher.verify(token, user.api_key):
                                     self.log.debug("[ApiKeyMiddleware] Good API key: " + log_suffix)
                                     request.user = user
+                                    setattr(request, '_dont_enforce_csrf_checks', True)
                                 else:
                                     self.log.warning("[ApiKeyMiddleware] Bad API key: " + log_suffix)
                     else:
