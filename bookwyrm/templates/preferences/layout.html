@@ -27,6 +27,10 @@
                 {% url 'prefs-delete' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Delete Account" %}</a>
             </li>
+            <li>
+                {% url 'prefs-api-key' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "API Key" %}</a>
+            </li>
         </ul>
         <h2 class="menu-label">{% trans "Data" %}</h2>
         <ul class="menu-list">

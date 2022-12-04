@@ -1,0 +1,51 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "API Key" %}{% endblock %}
+
+{% block header %}
+    {% trans "API Key" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block content">
+    <p class="notification is-danger is-light">
+        {% trans "API keys are used in automation, and allow third-party software to have full access to your account.  You should never share an API key with anyone else." %}
+    </p>
+
+    {% if form.non_field_errors %}
+    <p class="notification is-danger">{{ form.non_field_errors }}</p>
+    {% endif %}
+
+{% if state == "show" %}
+    {% if request.user.api_key %}
+    <p>{% trans "You already have an API key configured for you.  It is like a password and cannot be shown here.  If you want to create a new one, you will first need to revoke the existing one." %}</p>
+    <form action="{% url 'prefs-api-key' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="revoke">
+        <div class="field"><button class="button is-primary is-danger" type="submit">{% trans "Revoke existing API key" %}</button></div>
+    </form>
+    {% else %}
+        <p>{% trans "You may generate an API key.  It will only be shown once, and then cannot be recovered." %}</p>
+        <form action="{% url 'prefs-api-key' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="generate">
+            <div class="field"><button class="button is-primary" type="submit">{% trans "Generate a new API key" %}</button></div>
+        </form>
+    {% endif %}
+{% elif state == "generated" %}
+    <p>{% trans "Copy the following, as it will only be shown here, and cannot be recovered:" %}</p>
+    <pre>{{ bearer_token }}</pre>
+    <p>{% trans "When using this API key in an HTTP client, set the following header:" %}</p>
+    <pre>Authorization: Bearer {{ bearer_token }}</pre>
+    <p>{% trans "If using curl, you can add this header like so:" %}</p>
+    <pre>curl -H 'Authorization: Bearer {{ bearer_token }}' ...</pre>
+    <p><a href="{% url 'prefs-api-key' %}">{% trans "I have copied the API key and am ready to continue." %}</a></p>
+{% elif state == "revoked" %}
+    <p>{% trans "Your API key has been revoked." %}</p>
+    <p><a href="{% url 'prefs-api-key' %}">{% trans "Continue." %}</a></p>
+{% else %}
+    <p>{% trans "Something went wrong." %} <a href="{% url 'prefs-api-key' %}">{% trans "Go back and try again." %}</a></p>
+{% endif %}
+</div>
+{% endblock %}

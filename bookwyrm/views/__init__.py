@@ -41,6 +41,7 @@ from .preferences.two_factor_auth import (
     LoginWith2FA,
     Prompt2FA,
 )
+from .preferences.manage_api_key import ManageApiKey
 
 # books
 from .books.books import (

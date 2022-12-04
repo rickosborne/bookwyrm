@@ -536,6 +536,7 @@ urlpatterns = [
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
+    re_path(r"^preferences/api_key/?$", views.ManageApiKey.as_view(), name="prefs-api-key"),
     re_path(
         r"^preferences/deactivate/?$",
         views.DeactivateUser.as_view(),
